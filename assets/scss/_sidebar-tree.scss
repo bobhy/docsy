@@ -6,13 +6,6 @@
     margin-right: -15px;
     margin-left: -15px;
 
-    @include media-breakpoint-up(md) {
-        @supports (position: sticky) {
-            max-height: calc(100vh - 10rem);
-            overflow-y: auto;
-        }
-    }
-
 
     @include media-breakpoint-up(md) {
         display: block !important;
@@ -91,12 +84,17 @@
 
 .td-sidebar {
     @include media-breakpoint-up(md) {
+        @supports (position: sticky) {
+            position: sticky;
+        }
         padding-top: 4rem;
         background-color: $td-sidebar-bg-color;
         padding-right: 1rem;
         border-right: 1px solid $td-sidebar-border-color;
+        height: 100vh;
+        top: 0;
+        overflow-y: auto;
     }
-
 
     padding-bottom: 1rem;
 
@@ -114,21 +112,6 @@
 
     &__inner {
         order: 0;
-
-        @include media-breakpoint-up(md) {
-            @supports (position: sticky) {
-                position: sticky;
-                top: 4rem;
-                z-index: 10;
-                height: calc(100vh - 6rem);
-            }
-        }
-
-
-        @include media-breakpoint-up(xl) {
-            flex: 0 1 320px;
-        }
-
 
         .td-search-box {
             width: 100%;

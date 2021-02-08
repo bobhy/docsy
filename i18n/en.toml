@@ -25,6 +25,12 @@ other = "All Rights Reserved"
 [footer_privacy_policy]
 other = "Privacy Policy"
 
+# TOC and section index (Left nav)
+[left_nav_on_this_page]
+other = "On this page"
+
+[left_nav_in_this_section]
+other = "In this section"
 
 # Post (blog, articles etc.)
 [post_byline_by]

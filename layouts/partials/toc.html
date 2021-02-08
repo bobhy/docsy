@@ -1,8 +1,11 @@
-{{/*(moved to footer) partial "page-meta-links.html" . */}}
 {{ if not .Params.notoc }}
 {{ with .TableOfContents }}
 {{ if ge (len .) 200 }}
-{{ . }}
+<div>{{ T "left_nav_on_this_page"}}</div>
+<div class="td-toc">
+    {{ . }}
+</div>
+<div>{{ T "left_nav_in_this_section"}}</div>
 {{ end }}
 {{ end }}
 {{ end }}

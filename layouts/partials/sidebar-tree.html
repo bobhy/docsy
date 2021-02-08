@@ -19,6 +19,7 @@
   <div id="content-desktop"></div>
   {{ end }}
   <nav class="collapse td-sidebar-nav" id="td-section-nav">
+    {{ partial "toc.html" . }}
     {{ if  (gt (len .Site.Home.Translations) 0) }}
     <div class="nav-item dropdown d-block d-lg-none">
       {{ partial "navbar-lang-selector.html" . }}
