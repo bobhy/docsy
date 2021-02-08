@@ -55,3 +55,16 @@
         padding-left: 0;
     }
 }
+
+// td-page-meta when outside toc and in wide context (e.g, in footer)
+.td-page-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    a { 
+        flex: 0 0 auto; // fill to both outside edges
+        color: inherit;
+        font-size: 80%; // same as <small>
+        font-weight: $font-weight-medium;        
+    }
+}
