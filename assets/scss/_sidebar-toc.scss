@@ -60,11 +60,13 @@
 .td-page-meta {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    a { 
+    justify-content: center;
+    a {
         flex: 0 0 auto; // fill to both outside edges
+        padding-left: .5rem;
+        padding-right: .5rem;
         color: inherit;
         font-size: 80%; // same as <small>
-        font-weight: $font-weight-medium;        
+        font-weight: $font-weight-medium;
     }
 }
