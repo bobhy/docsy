@@ -1,0 +1,9 @@
+{{/* Emit tags of current page as a list of links (delimited by space) */}}
+{{ with .Param "tags" }}
+   {{ range $index, $tag := . }}
+      {{- if gt $index 0 }} {{ end }}
+      {{ with $.Site.GetPage ( printf "/%s/%s" "tags" $tag) }}
+      <a href="{{ .Permalink }}">{{ $tag }}</a>
+    {{- end -}}
+    {{- end -}}
+{{- end -}}
