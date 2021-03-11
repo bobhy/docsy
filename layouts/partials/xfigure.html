@@ -1,0 +1,83 @@
+{{/* figure with auto-resizing and srcset v2020-05-10
+    Converted into a partial, 3-10-2020, bob hyman
+    invoked as: {{ partial "xfigure.html" (dict src "xxx" link "xxx" target "xxx" rel "xxx" alt "xxx" title "xxx" caption "xxx" class "xxx" height "xxx" width "xxx" attr "xxx" attrlink "xxx") }}
+    Original shortcode below:
+
+    Drop-in replacement for Hugo's figure shortcode as of 2020-05-02 that uses img srcset
+    to enable browsers to download only the resolution that they need.
+
+    The resizing and srcset magic only works for images that are part of the page
+    bundle. It will fall back to stock Hugo figure behaviour otherwise.
+
+    Improvements that were initially out of reach of my Hugo template programming "skills"
+    but have now been taken care of:
+    - [x] gracefully handle images that are not in page bundle, i.e. no image processing available
+    - [x] use a single configurable sizes array, and derive everything from there
+
+    See https://cpbotha.net/2020/05/02/drop-in-replacement-for-hugo-figure-shortcode-with-img-srcset-support/
+
+    - original srcset img shortcode from: https://laurakalbag.com/processing-responsive-images-with-hugo/
+    - original hugo figure shortcode from: https://github.com/gohugoio/hugo/blob/master/tpl/tplimpl/embedded/templates/shortcodes/figure.html
+    - no unnecessary resizes and more nudges by Stéfan van der Walt https://mentat.za.net/
+    - mashing together and srcset logic fixes by Charl P. Botha https://cpbotha.net/
+
+    Changes:
+    - 2020-05-10 fall back to stock Hugo behaviour when no page bundle found
+    - 2020-05-04 no unnecessary resizes, sizes in array
+    - 2020-05-02 initial release
+
+    Programming puzzle:
+    If you specify both height and width, image aspect ratio is altered.  How to resize to width, then crop the height?
+    Especially when size might be in any units.  If we restrict the arguments to be unadorned numbers (pixels), could do this.
+
+    */}}
+
+    {{- $args := (merge (dict "width" "100%" "height" "100%") .) }} {{/* default width and height */}}
+
+    {{/* get file that matches the filename as specified as src="" in shortcode */}}
+    {{- $src := ($args.page).Resources.GetMatch (printf "*%s*" $args.src) -}}
+
+    {{/* hugo will resize to all of these sizes that are smaller than your original. configure if you like! */}}
+    {{- $sizes := (slice "480" "800" "1200" "1500") -}}
+
+
+    <figure{{ with $args.class }} class="{{ . }}"{{ end }}>
+        {{- if $args.link -}}
+            <a href="{{ $args.link }}"{{ with $args.target }} target="{{ . }}"{{ end }}{{ with $args.rel }} rel="{{ . }}"{{ end }}>
+        {{- end }}
+        <img
+            {{- if $src }}
+                sizes="(min-width: 35em) 1200px, 100vw" {{/* only srcset images smaller than or equal to the src (original) image size, as Hugo will upscale small images */}}
+                srcset='
+                {{- range $sizes -}}
+                       {{- if ge $src.Width . -}}{{ ($src.Resize (printf "%sx" .)).Permalink }} {{ (printf "%sw" .) }},{{- end -}}
+                {{- end -}}'
+                {{ if ge $src.Width "800" -}}src="{{- ($src.Resize "800x").Permalink -}}"  {{/* when no support for srcset (old browsers, RSS), we load small (800px) */}}
+                {{ else }}src="{{ $src.Permalink }}"     {{/* if image smaller than 800, then load the image itself */}}
+                {{ end -}}
+            {{- else -}} {{/* fall back to stock hugo behaviour when image is not available in bundle */}}
+                src="{{ $args.src }}"
+            {{- end -}}
+            {{- if or ($args.alt) ($args.caption) -}}
+                alt="{{ with $args.alt }}{{ . }}{{ else }}{{ $args.caption | markdownify| plainify }}{{ end }}"
+            {{- end -}}
+            {{- with $args.width }} width="{{ . }}"{{ end -}}
+            {{/* {{- with $args.height }} height="{{ . }}"{{ end }} */}}
+        /> <!-- Closing img tag -->
+        {{- if $args.link }}</a>{{ end -}}
+        {{ if or (or ($args.title) ($args.caption)) ($args.attr) }}
+            <figcaption>
+                {{ with ($args.title) -}}
+                    <h4>{{ . }}</h4>
+                {{- end -}}
+                {{- if or ($args.caption) ($args.attr) -}}<p style="font-size: 0.8rem">
+                    {{- $args.caption | markdownify -}}&nbsp;
+                    {{- with $args.attrlink }}
+                        <a href="{{ . }}">
+                    {{- end -}}
+                    <span class="float-right">{{- $args.attr | markdownify -}}</span>
+                    {{- if $args.attrlink }}</a>{{ end }}</p>
+                {{- end }}
+            </figcaption>
+        {{- end }}
+    </figure>

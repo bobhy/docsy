@@ -1,0 +1,17 @@
+{{/* display featured image or nothing if none configured.
+     look for resource with name *featured*, or, if none
+     whatever is identified by page Params.featured, or first item in Params.images
+     if reference is to a resource, resize it appropriately
+     if reference is to an external URI, use as is.
+
+     Note: current code only resizes resource found by name match.
+ */}}
+{{ $args := (merge (dict "width" "100%" "height" "100%") . ) }}
+{{ $class := .class | default "" }}
+{{ $imgpath := "" }}
+{{ if (($args.page.Resources.ByType "image").GetMatch "**featured*")}}{{ $imgpath = "featured"}}
+{{ else if ($args.page.Params.images)}}{{$imgpath = (index $args.page.Params.images 1)}}
+{{ end }}
+{{ if (ne $imgpath "" )}}
+{{ partial "xfigure.html" (dict "page" $args.page "src" $imgpath "height" $args.height "width" $args.width "class" $class) }}
+{{ end }}
