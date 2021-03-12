@@ -6,12 +6,12 @@
 
      Note: current code only resizes resource found by name match.
  */}}
-{{ $args := (merge (dict "width" "100%" "height" "100%") . ) }}
+{{ $args := (merge (dict "width" 100 "height" 100 "units" "vw") . ) }}
 {{ $class := .class | default "" }}
 {{ $imgpath := "" }}
 {{ if (($args.page.Resources.ByType "image").GetMatch "**featured*")}}{{ $imgpath = "featured"}}
-{{ else if ($args.page.Params.images)}}{{$imgpath = (index $args.page.Params.images 1)}}
+{{ else if ($args.page.Params.images)}}{{$imgpath = (first 1 $args.page.Params.images)}}
 {{ end }}
 {{ if (ne $imgpath "" )}}
-{{ partial "xfigure.html" (dict "page" $args.page "src" $imgpath "height" $args.height "width" $args.width "class" $class) }}
+{{ partial "xfigure.html" (dict "page" $args.page "src" $imgpath "height" $args.height "width" $args.width "units" $args.units "class" $class) }}
 {{ end }}

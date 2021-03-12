@@ -32,37 +32,38 @@
 
     */}}
 
-    {{- $args := (merge (dict "width" "100%" "height" "100%") .) }} {{/* default width and height */}}
+    {{- $args := (merge (dict "width" 100.0 "height" 100.0 "units" "%") .) }} {{/* default width and height */}}
+    {{- $args = (merge $args (dict "units" "vmin") )}}
 
     {{/* get file that matches the filename as specified as src="" in shortcode */}}
     {{- $src := ($args.page).Resources.GetMatch (printf "*%s*" $args.src) -}}
 
     {{/* hugo will resize to all of these sizes that are smaller than your original. configure if you like! */}}
-    {{- $sizes := (slice "480" "800" "1200" "1500") -}}
+    {{- $sizes := (slice 480 800 1200 1500) -}}
 
-
+    {{ $dbg_1 := slice "" }}
     <figure{{ with $args.class }} class="{{ . }}"{{ end }}>
         {{- if $args.link -}}
             <a href="{{ $args.link }}"{{ with $args.target }} target="{{ . }}"{{ end }}{{ with $args.rel }} rel="{{ . }}"{{ end }}>
         {{- end }}
         <img
             {{- if $src }}
+                {{ $ar := div (float $args.height) $args.width }}{{ $dbg_1 = $dbg_1 | append "ar" $ar }}
                 sizes="(min-width: 35em) 1200px, 100vw" {{/* only srcset images smaller than or equal to the src (original) image size, as Hugo will upscale small images */}}
                 srcset='
                 {{- range $sizes -}}
-                       {{- if ge $src.Width . -}}{{ ($src.Resize (printf "%sx" .)).Permalink }} {{ (printf "%sw" .) }},{{- end -}}
+                    {{- $dbg_1 = $dbg_1 | append (printf "%dx%1.f" . (div (mul . $ar) 2)) -}}
+                    {{- if ge $src.Width . -}}{{ ($src.Fill (printf "%dx%1.f" . (div (mul . $ar) 2))).Permalink }} {{ (printf "%dw" .) }},{{- end -}}
                 {{- end -}}'
-                {{ if ge $src.Width "800" -}}src="{{- ($src.Resize "800x").Permalink -}}"  {{/* when no support for srcset (old browsers, RSS), we load small (800px) */}}
-                {{ else }}src="{{ $src.Permalink }}"     {{/* if image smaller than 800, then load the image itself */}}
-                {{ end -}}
+                {{- /* when no support for srcset (old browsers, RSS), we load small (800px) */ -}}
+                src='{{ (cond (ge $src.Width 800) ($src.Resize "800x") $src).Permalink }}'
             {{- else -}} {{/* fall back to stock hugo behaviour when image is not available in bundle */}}
                 src="{{ $args.src }}"
             {{- end -}}
             {{- if or ($args.alt) ($args.caption) -}}
                 alt="{{ with $args.alt }}{{ . }}{{ else }}{{ $args.caption | markdownify| plainify }}{{ end }}"
             {{- end -}}
-            {{- with $args.width }} width="{{ . }}"{{ end -}}
-            {{/* {{- with $args.height }} height="{{ . }}"{{ end }} */}}
+            style='width:{{ printf "%1.f%s" (float $args.width) $args.units }}; height:{{ printf "%1.f%%" (float $args.height) }}'
         /> <!-- Closing img tag -->
         {{- if $args.link }}</a>{{ end -}}
         {{ if or (or ($args.title) ($args.caption)) ($args.attr) }}
@@ -81,3 +82,4 @@
             </figcaption>
         {{- end }}
     </figure>
+    <bold>dbg: {{delimit $dbg_1 " .. "}}</bold>
