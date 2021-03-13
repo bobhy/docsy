@@ -1,0 +1,6 @@
+{{/* print (usually, slice of) debugging output, but only if debug_print and not in production mode */}}
+{{ if (and (not hugo.IsProduction) (site.Params.debug_print))}}
+<p><bold>DEBUG:
+    {{ printf "%s" . }}
+</bold></p>
+{{ end}}

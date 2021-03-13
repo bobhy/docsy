@@ -26,6 +26,7 @@
 {{- $args := (merge (dict "aspect_ratio" 0.0 "width" "100%" "class" "" "sizes" (slice 400 800 1200 1500)) .) }} {{/* default width and height */}}
 {{/* get file that matches the filename as specified as src="" in shortcode */}}
 {{- $src := ($args.page).Resources.GetMatch (printf "*%s*" $args.src) -}}
+{{ partial "debug.html" (slice "args" $args "src" $src) }}
 {{- if (or $src (and $args.src (findRE "^http.*" $args.src))) -}}
 <figure {{ with $args.class }} class="mb-0 {{ . }}"{{ end }} style="max-width:{{ $args.width }};">
     {{- if $args.link -}}
