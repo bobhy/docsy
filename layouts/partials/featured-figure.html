@@ -6,12 +6,9 @@
 
      Note: current code only resizes resource found by name match.
  */}}
-{{ $args := (merge (dict "width" 100 "height" 100 "units" "vw") . ) }}
-{{ $class := .class | default "" }}
-{{ $imgpath := "" }}
-{{ if (($args.page.Resources.ByType "image").GetMatch "**featured*")}}{{ $imgpath = "featured"}}
-{{ else if ($args.page.Params.images)}}{{$imgpath = (first 1 $args.page.Params.images)}}
+ {{- $args := (merge (dict "aspect_ratio" 5.0 "width" "100%" "class" "") .) }} {{/* default width and height */}}
+ {{ $imgpath := "" }}
+{{ if (($args.page.Resources.ByType "image").GetMatch "*featured*")}}{{ $imgpath = "featured"}}
+{{ else if ($args.page.Params.images)}}{{$imgpath = (index $args.page.Params.images 0)}}
 {{ end }}
-{{ if (ne $imgpath "" )}}
-{{ partial "xfigure.html" (dict "page" $args.page "src" $imgpath "height" $args.height "width" $args.width "units" $args.units "class" $class) }}
-{{ end }}
+{{ partial "xfigure.html" (dict "page" $args.page "src" $imgpath "aspect_ratio" $args.aspect_ratio "width" $args.width "class" $args.class) }}
