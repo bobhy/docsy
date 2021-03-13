@@ -22,6 +22,10 @@ other = "in"
 [ui_tags]
 other = "tagged"
 
+# Taxonomy "Tag"
+[tax_tag]
+other = "tag"
+
 # Footer text
 [footer_all_rights_reserved]
 other = "All Rights Reserved"

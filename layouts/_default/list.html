@@ -1,5 +1,49 @@
 {{ define "main" }}
-{{ with .Content }}
-{{ . }}
-{{ end }}
-{{ end }}
+
+<div class="td-content">
+	<p class="font-weight-bold text-uppercase pt-1">{{.Section }}</p>
+	<h1>{{ .Title }}</h1>
+	{{ with .Summary }}<div class="lead">{{ . | markdownify }}</div>{{ end }}
+	{{ if (and (not .Params.hide_readingtime) (.Site.Params.ui.readingtime.enable)) }}
+	{{ partial "reading-time.html" . }}
+	{{ end }}
+	<div class="row">
+		<div class="col-12">
+			{{- if .Pages -}}
+			{{- $pag := .Paginate .Pages -}}
+			<ul class="list-unstyled mt-4">
+				{{ range .Pages }}
+				<li class="media mb-4">
+					<div class="media-body">
+						<h5 class="mt-0 mb-1"><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h5>
+						<p class="mb-2 mb-md-3"><small class="text-muted">{{ .Date.Format ($.Param "time_format_blog")}}
+							 {{- if .Params.tags -}} ,&nbsp; {{ T "ui_tags" }} {{ partial "tag-list.html" . }}
+							 {{- end -}} </small></p>
+						{{ partial "featured-figure.html" (dict "page" . "aspect_ratio" 0.0 "width" "25%" "class" "float-left mr-3 pt-1 d-none d-sm-inline") }}
+						{{ .Summary | markdownify }}</p>
+					</div>
+				</li>
+				{{ end }}
+			</ul>
+			{{ end }}
+		</div>
+	</div>
+
+	<div class="row pl-2 pt-2">
+		<div class="col">
+			{{ if .Pages }}
+			{{ template "_internal/pagination.html" . }}
+			{{ end }}
+		</div>
+	</div>
+
+	{{ if (and (not .Params.hide_feedback) (.Site.Params.ui.feedback.enable) (.Site.GoogleAnalytics)) }}
+	{{ partial "feedback.html" .Site.Params.ui.feedback }}
+	<br />
+	{{ end }}
+	{{ if (.Site.Params.DisqusShortname) }}
+	<br />
+	{{ partial "disqus-comment.html" . }}
+	{{ end }}
+
+	{{ end }}
