@@ -6,7 +6,7 @@
 
      Note: current code only resizes resource found by name match.
  */}}
- {{- $args := (merge (dict "aspect_ratio" 5.0 "width" "100%" "class" "") .) }} {{/* default width and height */}}
+ {{- $args := (merge (dict "aspect_ratio" 5.0 "width" "100%" "class" "") (cond (reflect.IsMap .) . (dict "page" .))) }} {{/* default width and height */}}
  {{ $imgpath := "" }}
 {{ if (($args.page.Resources.ByType "image").GetMatch "*featured*")}}{{ $imgpath = "featured"}}
 {{ else if ($args.page.Params.images)}}{{$imgpath = (index $args.page.Params.images 0)}}
