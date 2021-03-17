@@ -58,6 +58,7 @@
     a {
         &:hover {
             color: $blue;
+            font-weight: $font-weight-bold;
             text-decoration: none;
         }
 
@@ -122,7 +123,7 @@
 
     @include media-breakpoint-down(md) {
 
-    #content-desktop {display: none;}
-    #content-mobile {display: block;}
+        #content-desktop {display: none;}
+        #content-mobile {display: block;}
     }
 }

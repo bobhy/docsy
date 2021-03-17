@@ -1,0 +1,12 @@
+{{/* list of tags with counts */}}
+<div class="">
+    {{ with $.Site.Taxonomies.tags}}
+      <p class="td-section-nav__section-title">{{ T "left_nav_tags"}}</p>
+      {{ range $name, $taxonomy := . }}
+          {{ $tagCount := len $taxonomy}}
+            <a href='{{ "/tags/" | relURL }}{{ $name | urlize }}' class="td-sidebar-link__page">
+              {{ $name }}<sup>{{ $tagCount }}</sup>
+            </a>
+        {{ end }}
+    {{ end }}
+</div>
