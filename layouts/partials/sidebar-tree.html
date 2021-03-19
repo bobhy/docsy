@@ -28,6 +28,10 @@
       {{ partial "navbar-lang-selector.html" . }}
     </div>
     {{ end }}
+
+    <ul class="td-sidebar-nav__section">
+      {{ partial "toc.html" . }}
+    </ul>
     {{ $navRoot := cond (and (ne .Params.toc_root true) (eq .Site.Home.Type "docs")) .Site.Home .FirstSection }}
     {{ $ulNr := 0 }}
     {{ $ulShow := cond (isset .Site.Params.ui "ul_show") .Site.Params.ui.ul_show 1 }}

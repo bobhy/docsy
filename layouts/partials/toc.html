@@ -1,6 +1,6 @@
 {{ if not .Params.notoc }}
 {{ with .TableOfContents }}
-{{ if ge (len .) (site.Params.tableOfContents_minLength | default 200)}}
+{{ if ge (len .) (site.Params.ui.tableOfContents_minLength | default 200)}}
 <div class="td-section-nav__section-title">{{ T "left_nav_on_this_page"}}</div>
 <div class="td-toc">
     {{ . }}
